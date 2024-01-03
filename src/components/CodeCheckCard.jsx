@@ -5,14 +5,17 @@ import {
   CardContent,
   CardHeader,
   Input,
+  InputAdornment,
   InputLabel,
   Link
 } from '@mui/material'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import KeyOutlinedIcon from '@mui/icons-material/KeyOutlined'
 
 export const CodeCheckCard = ({ onIsContinuedChange, phoneNumber }) => {
   const navigate = useNavigate()
+  const [inputError, setInputError] = useState(false)
   const [inputTextValue, setInputTextValue] = useState('')
 
   const validateInput = (event) => {
@@ -39,6 +42,7 @@ export const CodeCheckCard = ({ onIsContinuedChange, phoneNumber }) => {
         sessionStorage.setItem('access_token', json.access_token)
         navigate('/')
       } else {
+        setInputError(true)
         console.log(response.statusText)
       }
     } catch (error) {
@@ -75,12 +79,19 @@ export const CodeCheckCard = ({ onIsContinuedChange, phoneNumber }) => {
           <Input
             fullWidth
             id='code-checker'
-            placeholder='00-00-00'
+            placeholder='123456'
             value={inputTextValue}
             inputProps={{ maxLength: 6 }}
             required
             type='text'
             onChange={validateInput}
+            error={inputError}
+            onKeyUp={() => setInputError(false)}
+            startAdornment={
+              <InputAdornment position='start'>
+                <KeyOutlinedIcon />
+              </InputAdornment>
+            }
           />
         </Box>
         <Button

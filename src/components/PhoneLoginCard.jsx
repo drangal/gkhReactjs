@@ -5,11 +5,16 @@ import {
   CardContent,
   CardHeader,
   Input,
+  InputAdornment,
   InputLabel
 } from '@mui/material'
+import PhoneIcon from '@mui/icons-material/Phone'
+import { useState } from 'react'
 
 export const PhoneLoginCard = ({ onIsContinuedChange, setPhoneNumber }) => {
   const phoneRegex = /^\+7\d{10}$/
+
+  const [inputError, setInputError] = useState(false)
 
   const fetchCodeByPhone = async () => {
     try {
@@ -39,7 +44,8 @@ export const PhoneLoginCard = ({ onIsContinuedChange, setPhoneNumber }) => {
     if (phoneRegex.test(document.getElementById('phone-number').value)) {
       await fetchCodeByPhone()
     } else {
-      alert('Номер телефона неверный.')
+      setInputError(true)
+      //alert('Номер телефона неверный.')
     }
   }
 
@@ -69,9 +75,16 @@ export const PhoneLoginCard = ({ onIsContinuedChange, setPhoneNumber }) => {
           <Input
             fullWidth
             id='phone-number'
-            placeholder='+7(949)000-00-00'
+            placeholder='+7949'
             required
             type='tel'
+            error={inputError}
+            onKeyUp={() => setInputError(false)}
+            startAdornment={
+              <InputAdornment position='start'>
+                <PhoneIcon />
+              </InputAdornment>
+            }
           />
         </Box>
         <Button

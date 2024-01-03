@@ -9,7 +9,15 @@ export const UserTicketMap = () => {
         load: 'Map,Placemark,control.ZoomControl,control.FullscreenControl,geoObject.addon.balloon'
       }}
     >
-      <Box sx={{ border: '3px solid black' }}>
+      <Box
+        sx={{
+          border: '3px solid black',
+          width: '100%',
+          height: '80dvh',
+          paddingLeft: '10px',
+          paddingRight: '10px'
+        }}
+      >
         Модуль с картой!
         <Map
           defaultState={{
@@ -18,7 +26,7 @@ export const UserTicketMap = () => {
             controls: ['zoomControl', 'fullscreenControl']
           }}
           modules={['control.ZoomControl', 'control.FullscreenControl']}
-          style={{ minHeight: '640px' }}
+          style={{ width: '100%', height: '90%' }}
         >
           <Clusterer
             options={{
