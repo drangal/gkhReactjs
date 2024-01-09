@@ -10,6 +10,7 @@ import {
 } from '@mui/material'
 import PhoneIcon from '@mui/icons-material/Phone'
 import { useState } from 'react'
+import { GlobalServerAdress } from '../../api/serverIPs'
 
 export const PhoneLoginCard = ({ onIsContinuedChange, setPhoneNumber }) => {
   const phoneRegex = /^\+7\d{10}$/
@@ -19,7 +20,7 @@ export const PhoneLoginCard = ({ onIsContinuedChange, setPhoneNumber }) => {
   const fetchCodeByPhone = async () => {
     try {
       const response = await fetch(
-        `https://enotgpt-authserver.serveo.net/auth/create_code_dispatcher`,
+        `${GlobalServerAdress}/auth/create_code_dispatcher`,
         {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
@@ -76,6 +77,7 @@ export const PhoneLoginCard = ({ onIsContinuedChange, setPhoneNumber }) => {
             fullWidth
             id='phone-number'
             placeholder='+7949'
+            inputProps={{ maxLength: 12 }}
             required
             type='tel'
             error={inputError}

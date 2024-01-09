@@ -1,10 +1,10 @@
 import { useEffect } from 'react'
-import { UserTicketMap } from './UserTicketMap'
-import { useNavigate } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 import { MainPageHeader } from './MainPageHeader'
 
 export const MainPage = () => {
   const navigate = useNavigate()
+
   useEffect(() => {
     if (!sessionStorage.getItem('access_token')) navigate('/login')
   }, [])
@@ -12,7 +12,8 @@ export const MainPage = () => {
   return (
     <div>
       <MainPageHeader />
-      <h1>Основная страница</h1> <UserTicketMap />
+      <h1>Основная страница</h1>
+      <Outlet />
     </div>
   )
 }

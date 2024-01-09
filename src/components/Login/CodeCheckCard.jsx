@@ -12,6 +12,7 @@ import {
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import KeyOutlinedIcon from '@mui/icons-material/KeyOutlined'
+import { GlobalServerAdress } from '../../api/serverIPs'
 
 export const CodeCheckCard = ({ onIsContinuedChange, phoneNumber }) => {
   const navigate = useNavigate()
@@ -26,7 +27,7 @@ export const CodeCheckCard = ({ onIsContinuedChange, phoneNumber }) => {
   const fetchDispatcherToken = async () => {
     try {
       const response = await fetch(
-        `https://enotgpt-authserver.serveo.net/auth/get_token_dispatcher`,
+        `${GlobalServerAdress}/auth/get_token_dispatcher`,
         {
           method: 'POST',
           headers: { 'content-type': 'application/json' },

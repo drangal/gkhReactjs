@@ -14,8 +14,6 @@ import RoofingIcon from '@mui/icons-material/Roofing'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 
-const pages = ['Карта', 'Заявки', 'Бригады']
-
 export function MainPageHeader() {
   const navigate = useNavigate()
   const [anchorElNav, setAnchorElNav] = useState(null)
@@ -94,11 +92,15 @@ export function MainPageHeader() {
                 display: { xs: 'block', md: 'none' }
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign='center'>{page}</Typography>
-                </MenuItem>
-              ))}
+              <MenuItem onClick={handleCloseNavMenu}>
+                <Typography textAlign='center'>Карта</Typography>
+              </MenuItem>
+              <MenuItem onClick={handleCloseNavMenu}>
+                <Typography textAlign='center'>Заявки</Typography>
+              </MenuItem>
+              <MenuItem onClick={handleCloseNavMenu}>
+                <Typography textAlign='center'>Бригады</Typography>
+              </MenuItem>
             </Menu>
           </Box>
           <RoofingIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
@@ -121,15 +123,30 @@ export function MainPageHeader() {
             ЖКХ
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page}
-              </Button>
-            ))}
+            <Button
+              onClick={() => {
+                navigate('/maps')
+              }}
+              sx={{ my: 2, color: 'white', display: 'block' }}
+            >
+              Карта
+            </Button>
+            <Button
+              onClick={() => {
+                navigate('/applications')
+              }}
+              sx={{ my: 2, color: 'white', display: 'block' }}
+            >
+              Заявки
+            </Button>
+            <Button
+              onClick={() => {
+                navigate('/workers')
+              }}
+              sx={{ my: 2, color: 'white', display: 'block' }}
+            >
+              Бригады
+            </Button>
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
@@ -155,13 +172,13 @@ export function MainPageHeader() {
               onClose={handleCloseUserMenu}
             >
               <MenuItem onClick={handleCloseUserMenu}>
-                <Typography textAlign='center'>Profile</Typography>
+                <Typography textAlign='center'>Профиль</Typography>
               </MenuItem>
               <MenuItem onClick={handleCloseUserMenu}>
-                <Typography textAlign='center'>Dashboard</Typography>
+                <Typography textAlign='center'>Статистика</Typography>
               </MenuItem>
               <MenuItem onClick={handleLogout}>
-                <Typography textAlign='center'>Logout</Typography>
+                <Typography textAlign='center'>Выйти</Typography>
               </MenuItem>
             </Menu>
           </Box>
