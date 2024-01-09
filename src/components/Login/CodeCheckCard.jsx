@@ -12,7 +12,7 @@ import {
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import KeyOutlinedIcon from '@mui/icons-material/KeyOutlined'
-import { GlobalServerAdress } from '../../api/serverIPs'
+import { getDispatcherToken } from '../../api/network'
 
 export const CodeCheckCard = ({ onIsContinuedChange, phoneNumber }) => {
   const navigate = useNavigate()
@@ -22,33 +22,6 @@ export const CodeCheckCard = ({ onIsContinuedChange, phoneNumber }) => {
   const validateInput = (event) => {
     const result = event.target.value.replace(/\D/g, '')
     setInputTextValue(result)
-  }
-
-  const fetchDispatcherToken = async () => {
-    try {
-      const response = await fetch(
-        `${GlobalServerAdress}/auth/get_token_dispatcher`,
-        {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({
-            number: phoneNumber,
-            code: +inputTextValue
-          })
-        }
-      )
-
-      if (response.ok) {
-        const json = await response.json()
-        sessionStorage.setItem('access_token', json.access_token)
-        navigate('/')
-      } else {
-        setInputError(true)
-        console.log(response.statusText)
-      }
-    } catch (error) {
-      console.log('Ошибки сети или чё-то такое')
-    }
   }
 
   return (
@@ -102,7 +75,14 @@ export const CodeCheckCard = ({ onIsContinuedChange, phoneNumber }) => {
             width: '100%'
           }}
           type='button'
-          onClick={fetchDispatcherToken}
+          onClick={() =>
+            getDispatcherToken(
+              phoneNumber,
+              inputTextValue,
+              setInputError,
+              navigate
+            )
+          }
         >
           Войти
         </Button>

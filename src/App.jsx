@@ -10,14 +10,7 @@ export default function App() {
       <Routes>
         <Route path='/' element={<MainPage />}>
           <Route path='maps' element={<UserTicketMap />} />
-          <Route
-            path='applications'
-            element={
-              <>
-                <h1>Заявки</h1> <Applications />
-              </>
-            }
-          />
+          <Route path='applications' element={<Applications />} />
           <Route path='workers' element={<h1>Работники</h1>} />
         </Route>
         <Route path='login/*' element={<Login />} />
