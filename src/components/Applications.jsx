@@ -1,94 +1,66 @@
-import { Box, Checkbox, Divider, Grid, IconButton, Stack } from '@mui/material'
-import { useDispatch, useSelector } from 'react-redux'
 import {
-  deleteApplication,
-  updateApplicationCompleted
-} from '../slices/applicationsSlice'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
-import { useEffect } from 'react'
-import { getAllDispatcherInvocations } from '../api/network'
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Typography
+} from '@mui/material'
+import { useSelector } from 'react-redux'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { useState } from 'react'
 
 export const Applications = () => {
   const applications = useSelector((state) => state.applications.value)
-  const dispatch = useDispatch()
+  const [expanded, setExpanded] = useState(false)
 
-  useEffect(() => {
-    getAllDispatcherInvocations(dispatch)
-  }, [])
+  const handleChangeAccordion = (panel) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : false)
+  }
 
   return (
     <Box
       sx={{
-        border: '3px solid black',
         width: '100%',
-        height: '80dvh',
-        paddingLeft: '10px',
-        paddingRight: '10px'
+        padding: '10px'
       }}
     >
-      Модуль с заявками!
-      <Stack spacing={2}>
-        {applications.map((application) => {
-          return (
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                border: 1,
-                borderRadius: 1,
-                borderColor: '#424242',
-                gap: '10px',
-                p: '10px',
-                mt: 1
-              }}
-              key={application.id}
+      {applications.map((application) => {
+        return (
+          <Accordion
+            expanded={expanded === `panel${application.id}`}
+            onChange={handleChangeAccordion(`panel${application.id}`)}
+            key={application.id}
+          >
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls={`panel${application.id}bh-content`}
+              id={`panel${application.id}bh-header`}
             >
-              <Divider sx={{ height: 28, m: 0.5 }} orientation='vertical' />
-              <Box sx={{ display: 'flex', flexGrow: 1 }}>
+              <Typography sx={{ width: '33%', flexShrink: 0 }}>
                 {application.title}
-              </Box>
+              </Typography>
+              <Typography sx={{ color: 'text.secondary' }}>
+                {application.address}
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
               <Box
+                component='img'
                 sx={{
-                  display: 'flex'
+                  width: 800,
+                  height: 600,
+                  objectFit: 'contain',
+                  maxHeight: { xs: 320, md: 800 },
+                  maxWidth: { xs: 240, md: 600 }
                 }}
-              >
-                <Checkbox
-                  checked={application.completed}
-                  onClick={() => {
-                    dispatch(
-                      updateApplicationCompleted({
-                        id: application.id,
-                        userId: application.userId
-                      })
-                    )
-                  }}
-                />
-              </Box>
-              <Box
-                sx={{
-                  display: 'flex'
-                }}
-              >
-                <IconButton
-                  type='button'
-                  sx={{ p: '10px' }}
-                  aria-label='delete'
-                  onClick={() => {
-                    dispatch(
-                      deleteApplication({
-                        id: application.id,
-                        userId: application.userId
-                      })
-                    )
-                  }}
-                >
-                  <DeleteForeverIcon />
-                </IconButton>
-              </Box>
-            </Box>
-          )
-        })}
-      </Stack>
+                alt='Фото проблемы.'
+                src={application.photo}
+              />
+              <Typography>{application.description}</Typography>
+            </AccordionDetails>
+          </Accordion>
+        )
+      })}
     </Box>
   )
 }

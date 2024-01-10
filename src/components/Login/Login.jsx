@@ -24,16 +24,15 @@ export function Login() {
       justifyContent={'center'}
       height={'100dvh'}
     >
-      {isContinued || (
-        <PhoneLoginCard
-          onIsContinuedChange={handleIsContinuedChange}
-          setPhoneNumber={setPhoneNumber}
-        />
-      )}
-      {isContinued && (
+      {isContinued ? (
         <CodeCheckCard
           onIsContinuedChange={handleIsContinuedChange}
           phoneNumber={phoneNumber}
+        />
+      ) : (
+        <PhoneLoginCard
+          onIsContinuedChange={handleIsContinuedChange}
+          setPhoneNumber={setPhoneNumber}
         />
       )}
     </Box>

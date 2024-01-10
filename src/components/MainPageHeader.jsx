@@ -26,7 +26,23 @@ export function MainPageHeader() {
     setAnchorElUser(event.currentTarget)
   }
 
+  const handleCloseNavMenuMap = () => {
+    navigate('/maps')
+    setAnchorElNav(null)
+  }
+
+  const handleCloseNavMenuApplications = () => {
+    navigate('/applications')
+    setAnchorElNav(null)
+  }
+
+  const handleCloseNavMenuWorkers = () => {
+    navigate('/workers')
+    setAnchorElNav(null)
+  }
+
   const handleCloseNavMenu = () => {
+    navigate('/maps')
     setAnchorElNav(null)
   }
 
@@ -92,13 +108,13 @@ export function MainPageHeader() {
                 display: { xs: 'block', md: 'none' }
               }}
             >
-              <MenuItem onClick={handleCloseNavMenu}>
+              <MenuItem onClick={handleCloseNavMenuMap}>
                 <Typography textAlign='center'>Карта</Typography>
               </MenuItem>
-              <MenuItem onClick={handleCloseNavMenu}>
+              <MenuItem onClick={handleCloseNavMenuApplications}>
                 <Typography textAlign='center'>Заявки</Typography>
               </MenuItem>
-              <MenuItem onClick={handleCloseNavMenu}>
+              <MenuItem onClick={handleCloseNavMenuWorkers}>
                 <Typography textAlign='center'>Бригады</Typography>
               </MenuItem>
             </Menu>

@@ -1,7 +1,10 @@
 import { Box } from '@mui/material'
 import { Clusterer, Map, Placemark, YMaps } from '@pbe/react-yandex-maps'
+import { useSelector } from 'react-redux'
 
 export const UserTicketMap = () => {
+  const applications = useSelector((state) => state.applications.value)
+
   return (
     <YMaps
       query={{
@@ -18,15 +21,14 @@ export const UserTicketMap = () => {
           paddingRight: '10px'
         }}
       >
-        Модуль с картой!
         <Map
           defaultState={{
             center: [48.023, 37.8022],
-            zoom: 11,
+            zoom: 12,
             controls: ['zoomControl', 'fullscreenControl']
           }}
           modules={['control.ZoomControl', 'control.FullscreenControl']}
-          style={{ width: '100%', height: '90%' }}
+          style={{ height: '90%' }}
         >
           <Clusterer
             options={{
@@ -34,20 +36,18 @@ export const UserTicketMap = () => {
               groupByCoordinates: false
             }}
           >
-            <Placemark
-              modules={['geoObject.addon.balloon']}
-              defaultGeometry={[48.023, 37.8022]}
-              properties={{
-                balloonContentBody: 'Текст при нажатии на метку'
-              }}
-            />
-            <Placemark
-              modules={['geoObject.addon.balloon']}
-              defaultGeometry={[48.024, 37.8018]}
-              properties={{
-                balloonContentBody: 'Текст при нажатии на метку'
-              }}
-            />
+            {applications.map((application) => {
+              return (
+                <Placemark
+                  modules={['geoObject.addon.balloon']}
+                  defaultGeometry={application.coordinates}
+                  properties={{
+                    balloonContentBody: 'text'
+                  }}
+                  key={application.id}
+                />
+              )
+            })}
           </Clusterer>
         </Map>
       </Box>
