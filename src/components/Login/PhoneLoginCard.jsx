@@ -73,6 +73,7 @@ export const PhoneLoginCard = ({ onIsContinuedChange, setPhoneNumber }) => {
           }}
           type='button'
           onClick={onButtonClick}
+          autoFocus
         >
           Продолжить
         </Button>

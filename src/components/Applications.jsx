@@ -2,16 +2,68 @@ import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
+  Alert,
   Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Divider,
+  Snackbar,
+  TextField,
+  Tooltip,
   Typography
 } from '@mui/material'
 import { useSelector } from 'react-redux'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt'
 import { useState } from 'react'
+import { closeInvocation } from '../api/network'
 
 export const Applications = () => {
   const applications = useSelector((state) => state.applications.value)
+  const [openDialog, setOpenDialog] = useState(false)
+  const [openAlert, setOpenAlert] = useState(false)
+  const [alertText, setAlertText] = useState('Заявка отклонена успешно!')
+  const [severityValue, setSeverityValue] = useState('success')
   const [expanded, setExpanded] = useState(false)
+  const [selectedApplicationId, setSelectedApplication] = useState()
+
+  const handleClickOpenDialog = (event) => {
+    setSelectedApplication(
+      +event.currentTarget.parentNode.parentNode.id.match(/\d+/)
+    )
+    setOpenDialog(true)
+  }
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false)
+  }
+
+  const handleClickDialogActionButton = () => {
+    const closeResult = closeInvocation(selectedApplicationId)
+    closeResult.then(() => {
+      if (closeResult) {
+        setAlertText('Заявка отклонена успешно!')
+        setSeverityValue('success')
+      } else {
+        setAlertText('Не удалось отклонить заявку.')
+        setSeverityValue('warning')
+      }
+      setOpenAlert(true)
+      handleCloseDialog()
+    })
+  }
+
+  const handleCloseAlert = (event, reason) => {
+    if (reason === 'clickaway') {
+      return
+    }
+
+    setOpenAlert(false)
+  }
 
   const handleChangeAccordion = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false)
@@ -21,46 +73,113 @@ export const Applications = () => {
     <Box
       sx={{
         width: '100%',
-        padding: '10px'
+        paddingTop: 2
       }}
     >
-      {applications.map((application) => {
-        return (
-          <Accordion
-            expanded={expanded === `panel${application.id}`}
-            onChange={handleChangeAccordion(`panel${application.id}`)}
-            key={application.id}
-          >
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls={`panel${application.id}bh-content`}
-              id={`panel${application.id}bh-header`}
+      {applications.map(
+        (application) =>
+          application.status == -3 ||
+          application.status == -2 ||
+          application.status == -1 ||
+          application.status == 3 || (
+            <Accordion
+              expanded={expanded === `panel${application.id}`}
+              onChange={handleChangeAccordion(`panel${application.id}`)}
+              key={application.id}
             >
-              <Typography sx={{ width: '33%', flexShrink: 0 }}>
-                {application.title}
-              </Typography>
-              <Typography sx={{ color: 'text.secondary' }}>
-                {application.address}
-              </Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Box
-                component='img'
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls={`panel${application.id}bh-content`}
+                id={`panel${application.id}bh-header`}
+              >
+                <Typography sx={{ width: '33%', flexShrink: 0 }}>
+                  {application.title}
+                </Typography>
+                <Typography sx={{ color: 'text.secondary' }}>
+                  {application.address}
+                </Typography>
+              </AccordionSummary>
+              <Divider />
+              <AccordionDetails
                 sx={{
-                  width: 800,
-                  height: 600,
-                  objectFit: 'contain',
-                  maxHeight: { xs: 320, md: 800 },
-                  maxWidth: { xs: 240, md: 600 }
+                  display: 'flex',
+                  alignItems: 'center',
+                  flexWrap: 'wrap',
+                  justifyContent: { xs: 'center' },
+                  gap: { xs: 2 }
                 }}
-                alt='Фото проблемы.'
-                src={application.photo}
-              />
-              <Typography>{application.description}</Typography>
-            </AccordionDetails>
-          </Accordion>
-        )
-      })}
+              >
+                <Box
+                  component='img'
+                  sx={{
+                    width: 800,
+                    height: 600,
+                    objectFit: 'contain',
+                    maxHeight: { xs: 320, md: 500 },
+                    maxWidth: { xs: 240, md: 400 }
+                  }}
+                  alt='Фото проблемы.'
+                  src={application.photo}
+                />
+                <Box sx={{ alignSelf: 'flex-start', flexGrow: 1 }}>
+                  <Typography variant='h5'>Описание:</Typography>
+                  <Typography>{application.description}</Typography>
+                </Box>
+                <Tooltip title='Отменить заявку' placement='top' arrow>
+                  <Button
+                    variant='outlined'
+                    startIcon={<ThumbDownOffAltIcon />}
+                    sx={{ alignSelf: 'flex-end' }}
+                    onClick={handleClickOpenDialog}
+                  >
+                    Отклонить
+                  </Button>
+                </Tooltip>
+              </AccordionDetails>
+            </Accordion>
+          )
+      )}
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle id='alert-dialog-title'>{'Внимание!'}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id='alert-dialog-description'>
+            Вы уверены что хотите отменить заявку? Опишите причину:
+            <TextField
+              id='delete-reason'
+              label='Причина'
+              fullWidth
+              margin='dense'
+              multiline
+              defaultValue='Неудовлетворительная заявка.'
+            />
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} autoFocus>
+            Отменить
+          </Button>
+          <Button onClick={handleClickDialogActionButton}>Удалить</Button>
+        </DialogActions>
+      </Dialog>
+      <Snackbar
+        open={openAlert}
+        autoHideDuration={3000}
+        onClose={handleCloseAlert}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <Alert
+          onClose={handleCloseAlert}
+          severity={severityValue}
+          sx={{ width: '100%' }}
+        >
+          {alertText}
+        </Alert>
+      </Snackbar>
     </Box>
   )
 }

@@ -5,6 +5,8 @@ import { useSelector } from 'react-redux'
 export const UserTicketMap = () => {
   const applications = useSelector((state) => state.applications.value)
 
+  // todo reload site
+
   return (
     <YMaps
       query={{
@@ -14,11 +16,8 @@ export const UserTicketMap = () => {
     >
       <Box
         sx={{
-          border: '3px solid black',
           width: '100%',
-          height: '80dvh',
-          paddingLeft: '10px',
-          paddingRight: '10px'
+          height: '100dvh'
         }}
       >
         <Map
@@ -28,7 +27,7 @@ export const UserTicketMap = () => {
             controls: ['zoomControl', 'fullscreenControl']
           }}
           modules={['control.ZoomControl', 'control.FullscreenControl']}
-          style={{ height: '90%' }}
+          style={{ height: '100%', width: '100%' }}
         >
           <Clusterer
             options={{
@@ -40,9 +39,9 @@ export const UserTicketMap = () => {
               return (
                 <Placemark
                   modules={['geoObject.addon.balloon']}
-                  defaultGeometry={application.coordinates}
+                  defaultGeometry={application.coordinates.toReversed()}
                   properties={{
-                    balloonContentBody: 'text'
+                    balloonContentBody: application.description
                   }}
                   key={application.id}
                 />

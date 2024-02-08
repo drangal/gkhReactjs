@@ -166,7 +166,7 @@ export function MainPageHeader() {
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title='Open settings'>
+            <Tooltip title='Настройки'>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar alt='Диспетчер' src='/static/images/avatar/2.jpg' />
               </IconButton>

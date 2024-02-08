@@ -83,6 +83,7 @@ export const CodeCheckCard = ({ onIsContinuedChange, phoneNumber }) => {
               navigate
             )
           }
+          autoFocus
         >
           Войти
         </Button>

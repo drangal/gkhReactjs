@@ -1,8 +1,11 @@
 import { useEffect } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 import { MainPageHeader } from './MainPageHeader'
-import { Box } from '@mui/material'
-import { getAllDispatcherInvocations } from '../api/network'
+import { Box, Container } from '@mui/material'
+import {
+  getIncomingDispatcherInvocations,
+  getFreeWorkers
+} from '../api/network'
 import { useDispatch } from 'react-redux'
 
 export const MainPage = () => {
@@ -11,14 +14,23 @@ export const MainPage = () => {
 
   useEffect(() => {
     if (!sessionStorage.getItem('access_token')) navigate('/login')
-    getAllDispatcherInvocations(dispatch)
+    getIncomingDispatcherInvocations(dispatch)
+    getFreeWorkers(dispatch)
   }, [])
 
   return (
-    <Box sx={{ bgcolor: '#06c3' }}>
+    <Box sx={{ bgcolor: '#06c3', overflow: 'auto', height: '100vh' }}>
       <MainPageHeader />
-      <h1>Основная страница</h1>
-      <Outlet />
+      {/*<h1>Основная страница</h1>*/}
+      <Container maxWidth='xl'>
+        <Outlet />
+      </Container>
+      {/*<Paper
+        sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }}
+        elevation={3}
+      >
+        TEXT?
+  </Paper>*/}
     </Box>
   )
 }
