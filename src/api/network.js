@@ -1,5 +1,6 @@
 import { setApplicationList } from '../slices/applicationsSlice'
 import { setFreeWorkersList } from '../slices/freeWorkersSlice'
+import { setUserInfo } from '../slices/userInfoSlice'
 
 const LocalAuthServerAdress = 'http://26.65.125.199:8000'
 const GlobalAuthServerAdress = 'https://enotgpt-authserver.serveo.net'
@@ -14,14 +15,16 @@ const MainServerGetMyIncomingInvocations =
   '/dispatchers/getMyIncomingInvocations'
 const MainServerGetFreeWorkers = '/dispatchers/getFreeWorkers'
 const MainServerCloseInvocation = '/dispatchers/dispatcherCloseInvocation'
+const MainServerUsersMe = '/users/me'
+const MainServerUsersEdit = '/users/edit'
 
 export const closeInvocation = async (id) => {
   try {
     const response = await fetch(
       GlobalMainServerAdress + MainServerCloseInvocation,
       {
-        mode: 'no-cors',
-        method: 'POST',
+        mode: 'cors',
+        method: 'PATCH',
         headers: {
           'content-type': 'application/json',
           Authorization: 'Bearer ' + sessionStorage.getItem('access_token')
@@ -35,7 +38,7 @@ export const closeInvocation = async (id) => {
 
     return response.ok
   } catch (error) {
-    console.log('Ошибки сети или чё-то такое')
+    console.log('Ошибки сети или чё-то такое: ' + error)
     return false
   }
 }
@@ -136,6 +139,56 @@ export const getDispatcherToken = async (
     } else {
       setInputError(true)
       console.log(response.statusText)
+    }
+  } catch (error) {
+    console.log('Ошибки сети или чё-то такое')
+  }
+}
+
+export const getUserInfo = async (dispatch) => {
+  try {
+    const response = await fetch(GlobalMainServerAdress + MainServerUsersMe, {
+      method: 'GET',
+      headers: {
+        'content-type': 'application/json',
+        Authorization: 'Bearer ' + sessionStorage.getItem('access_token')
+      }
+    })
+    if (response.ok) {
+      const json = await response.json()
+      dispatch(setUserInfo(json.user))
+    } else {
+      console.log('WRONG DATA')
+    }
+  } catch (error) {
+    console.log('Ошибки сети или чё-то такое')
+  }
+}
+
+export const setUserEdit = async () => {
+  try {
+    const response = await fetch(GlobalMainServerAdress + MainServerUsersEdit, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        Authorization: 'Bearer ' + sessionStorage.getItem('access_token')
+      },
+      body: JSON.stringify({
+        name: document.getElementById('name').value,
+        surname: document.getElementById('surname').value,
+        patronymic: document.getElementById('patronymic').value,
+        city: document.getElementById('city').value,
+        photo: 'string',
+        street: document.getElementById('street').value,
+        house: document.getElementById('houseNumber').value,
+        apartment_number: document.getElementById('apartmentNumber').value,
+        coordinates: [0]
+      })
+    })
+    if (response.ok) {
+      console.log(response.ok)
+    } else {
+      console.log('WRONG DATA')
     }
   } catch (error) {
     console.log('Ошибки сети или чё-то такое')

@@ -4,7 +4,8 @@ import { MainPageHeader } from './MainPageHeader'
 import { Box, Container } from '@mui/material'
 import {
   getIncomingDispatcherInvocations,
-  getFreeWorkers
+  getFreeWorkers,
+  getUserInfo
 } from '../api/network'
 import { useDispatch } from 'react-redux'
 
@@ -14,8 +15,8 @@ export const MainPage = () => {
 
   useEffect(() => {
     if (!sessionStorage.getItem('access_token')) navigate('/login')
-    getIncomingDispatcherInvocations(dispatch)
     getFreeWorkers(dispatch)
+    getUserInfo(dispatch)
   }, [])
 
   return (

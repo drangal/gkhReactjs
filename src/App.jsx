@@ -4,6 +4,7 @@ import { MainPage } from './components/MainPage'
 import { UserTicketMap } from './components/UserTicketMap'
 import { Applications } from './components/Applications'
 import { Workers } from './components/Workers'
+import { UserInfo } from './components/UserInfo'
 
 export default function App() {
   return (
@@ -13,6 +14,7 @@ export default function App() {
           <Route path='maps' element={<UserTicketMap />} />
           <Route path='applications' element={<Applications />} />
           <Route path='workers' element={<Workers />} />
+          <Route path='profile' element={<UserInfo />} />
         </Route>
         <Route path='login/*' element={<Login />} />
         <Route path='*' element={<Link to='/'>404 Not Found!</Link>} />

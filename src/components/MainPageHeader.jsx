@@ -13,11 +13,13 @@ import MenuItem from '@mui/material/MenuItem'
 import RoofingIcon from '@mui/icons-material/Roofing'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
+import { useSelector } from 'react-redux'
 
 export function MainPageHeader() {
   const navigate = useNavigate()
   const [anchorElNav, setAnchorElNav] = useState(null)
   const [anchorElUser, setAnchorElUser] = useState(null)
+  const userInfo = useSelector((state) => state.userInfo.value)
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget)
@@ -48,6 +50,11 @@ export function MainPageHeader() {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null)
+  }
+
+  const handleOpenUserProfile = () => {
+    handleCloseUserMenu()
+    navigate('/profile')
   }
 
   const handleLogout = () => {
@@ -168,7 +175,7 @@ export function MainPageHeader() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title='Настройки'>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt='Диспетчер' src='/static/images/avatar/2.jpg' />
+                <Avatar alt='Dispatcher' src={userInfo.photo} />
               </IconButton>
             </Tooltip>
             <Menu
@@ -187,11 +194,8 @@ export function MainPageHeader() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              <MenuItem onClick={handleCloseUserMenu}>
+              <MenuItem onClick={handleOpenUserProfile}>
                 <Typography textAlign='center'>Профиль</Typography>
-              </MenuItem>
-              <MenuItem onClick={handleCloseUserMenu}>
-                <Typography textAlign='center'>Статистика</Typography>
               </MenuItem>
               <MenuItem onClick={handleLogout}>
                 <Typography textAlign='center'>Выйти</Typography>
