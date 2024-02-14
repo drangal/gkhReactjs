@@ -18,13 +18,18 @@ import {
 } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt'
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt'
 import { useEffect, useState } from 'react'
 import {
   closeInvocation,
+  getAcceptedDispatcherInvocations,
+  getClosedDispatcherInvocations,
+  getInWorkDispatcherInvocations,
   getIncomingDispatcherInvocations
 } from '../api/network'
-import { ToggleInvocations } from './ToggleInvocations'
+import { ToggleInvocationStatus } from './ToggleInvocations'
+import { setApplicationList } from '../slices/applicationsSlice'
 
 //TODO исправить "успешное отклонение заявки" при ошибке запроса, попробовать обновить страницу
 
@@ -36,7 +41,7 @@ export const Applications = () => {
   const [alertText, setAlertText] = useState('Заявка отклонена успешно!')
   const [severityValue, setSeverityValue] = useState('success')
   const [expanded, setExpanded] = useState(false)
-  const [alignment, setAlignment] = useState('incoming')
+  const [applicationStatus, setApplicationStatus] = useState('incoming')
   const [selectedApplicationId, setSelectedApplication] = useState()
 
   const handleClickOpenDialog = (event) => {
@@ -85,6 +90,18 @@ export const Applications = () => {
     getIncomingDispatcherInvocations(dispatch)
   }, [])
 
+  useEffect(() => {
+    if (applicationStatus === 'incoming')
+      getIncomingDispatcherInvocations(dispatch)
+    else if (applicationStatus === 'accepted')
+      getAcceptedDispatcherInvocations(dispatch)
+    else if (applicationStatus === 'inWork')
+      getInWorkDispatcherInvocations(dispatch)
+    else if (applicationStatus === 'closed')
+      getClosedDispatcherInvocations(dispatch)
+    else dispatch(setApplicationList([]))
+  }, [applicationStatus])
+
   return (
     <Box
       sx={{
@@ -96,7 +113,10 @@ export const Applications = () => {
         gap: 1
       }}
     >
-      <ToggleInvocations alignment={alignment} setAlignment={setAlignment} />
+      <ToggleInvocationStatus
+        applicationStatus={applicationStatus}
+        setApplicationStatus={setApplicationStatus}
+      />
       {applications.map((application) => (
         <Accordion
           sx={{ alignSelf: 'flex-start', width: '100%' }}
@@ -142,6 +162,21 @@ export const Applications = () => {
               <Typography variant='h5'>Описание:</Typography>
               <Typography>{application.description}</Typography>
             </Box>
+            {applicationStatus === 'incoming' ? (
+              <Tooltip title='Принять заявку' placement='top' arrow>
+                <Button
+                  variant='outlined'
+                  startIcon={<ThumbUpOffAltIcon />}
+                  sx={{ alignSelf: 'flex-end' }}
+                  onClick={() => console.log('Приняли)')}
+                >
+                  Принять
+                </Button>
+              </Tooltip>
+            ) : (
+              ''
+            )}
+
             <Tooltip title='Отменить заявку' placement='top' arrow>
               <Button
                 variant='outlined'
@@ -155,6 +190,7 @@ export const Applications = () => {
           </AccordionDetails>
         </Accordion>
       ))}
+
       <Dialog
         open={openDialog}
         onClose={handleCloseDialog}

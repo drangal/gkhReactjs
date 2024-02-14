@@ -13,6 +13,8 @@ const AuthServerCreateCodeDispatcher = '/auth/create_code/dispatcher'
 const AuthServerGetTokenDispatcher = '/auth/get_token/dispatcher'
 const MainServerGetMyIncomingInvocations =
   '/dispatchers/getMyIncomingInvocations'
+const MainServerGetInvocationsByStatus =
+  '/dispatchers/getAllMyInvocationsByStatus'
 const MainServerGetFreeWorkers = '/dispatchers/getFreeWorkers'
 const MainServerCloseInvocation = '/dispatchers/dispatcherCloseInvocation'
 const MainServerUsersMe = '/users/me'
@@ -70,6 +72,76 @@ export const getIncomingDispatcherInvocations = async (dispatch) => {
   try {
     const response = await fetch(
       GlobalMainServerAdress + MainServerGetMyIncomingInvocations,
+      {
+        method: 'GET',
+        headers: {
+          'content-type': 'application/json',
+          Authorization: 'Bearer ' + sessionStorage.getItem('access_token')
+        }
+      }
+    )
+    if (response.ok) {
+      const json = await response.json()
+      dispatch(setApplicationList(json.invocations))
+    } else {
+      console.log('WRONG DATA')
+    }
+  } catch (error) {
+    console.log('Ошибки сети или чё-то такое' + error)
+  }
+}
+
+export const getAcceptedDispatcherInvocations = async (dispatch) => {
+  try {
+    const response = await fetch(
+      GlobalMainServerAdress + MainServerGetInvocationsByStatus + '?status=1',
+      {
+        method: 'GET',
+        headers: {
+          'content-type': 'application/json',
+          Authorization: 'Bearer ' + sessionStorage.getItem('access_token')
+        }
+      }
+    )
+    if (response.ok) {
+      const json = await response.json()
+      dispatch(setApplicationList(json.invocations))
+    } else {
+      console.log('WRONG DATA')
+    }
+  } catch (error) {
+    console.log('Ошибки сети или чё-то такое')
+  }
+}
+
+export const getInWorkDispatcherInvocations = async (dispatch) => {
+  try {
+    const response = await fetch(
+      GlobalMainServerAdress + MainServerGetInvocationsByStatus + '?status=2',
+      {
+        method: 'GET',
+        headers: {
+          'content-type': 'application/json',
+          Authorization: 'Bearer ' + sessionStorage.getItem('access_token')
+        }
+      }
+    )
+    if (response.ok) {
+      const json = await response.json()
+      dispatch(setApplicationList(json.invocations))
+    } else {
+      console.log('WRONG DATA')
+    }
+  } catch (error) {
+    console.log('Ошибки сети или чё-то такое')
+  }
+}
+export const getClosedDispatcherInvocations = async (dispatch) => {
+  try {
+    const response = await fetch(
+      GlobalMainServerAdress +
+        MainServerGetInvocationsByStatus +
+        '?status=-1&status=-2&status=-3',
       {
         method: 'GET',
         headers: {

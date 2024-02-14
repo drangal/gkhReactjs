@@ -1,21 +1,24 @@
 import { ToggleButton, ToggleButtonGroup } from '@mui/material'
-import { useState } from 'react'
 
-export const ToggleInvocations = ({ alignment, setAlignment }) => {
+export const ToggleInvocationStatus = ({
+  applicationStatus,
+  setApplicationStatus
+}) => {
   const handleChange = (event, newAlignment) => {
-    setAlignment(newAlignment)
+    setApplicationStatus(newAlignment)
   }
 
   return (
     <ToggleButtonGroup
       color='primary'
-      value={alignment}
+      value={applicationStatus}
       exclusive
       onChange={handleChange}
       aria-label='Platform'
     >
-      <ToggleButton value='all'>Все</ToggleButton>
       <ToggleButton value='incoming'>Входящие</ToggleButton>
+      <ToggleButton value='accepted'>Принятые</ToggleButton>
+      <ToggleButton value='inWork'>В работе</ToggleButton>
       <ToggleButton value='closed'>Отменённые</ToggleButton>
     </ToggleButtonGroup>
   )

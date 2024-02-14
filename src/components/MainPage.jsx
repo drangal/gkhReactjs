@@ -15,8 +15,11 @@ export const MainPage = () => {
 
   useEffect(() => {
     if (!sessionStorage.getItem('access_token')) navigate('/login')
-    getFreeWorkers(dispatch)
-    getUserInfo(dispatch)
+    else {
+      getFreeWorkers(dispatch)
+      getUserInfo(dispatch)
+      navigate('/applications')
+    }
   }, [])
 
   return (
