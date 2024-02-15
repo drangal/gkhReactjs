@@ -1,6 +1,7 @@
 import { router } from '../router/router'
 import { setApplicationList } from '../slices/applicationsSlice'
 import { setFreeWorkersList } from '../slices/freeWorkersSlice'
+import { setJobsList } from '../slices/jobsSlice'
 import { setUserInfo } from '../slices/userInfoSlice'
 
 const LocalAuthServerAdress = 'http://26.65.125.199:8000'
@@ -16,6 +17,8 @@ const MainServerGetMyIncomingInvocations =
   '/dispatchers/getMyIncomingInvocations'
 const MainServerGetInvocationsByStatus =
   '/dispatchers/getAllMyInvocationsByStatus'
+const MainServerGetJobApplicationsByStatus =
+  '/dispatchers/getJobApplicationsByStatus'
 const MainServerGetFreeWorkers = '/dispatchers/getFreeWorkers'
 const MainServerCloseInvocation = '/dispatchers/dispatcherCloseInvocation'
 const MainServerUsersMe = '/users/me'
@@ -161,7 +164,30 @@ export const getClosedDispatcherInvocations = async (dispatch) => {
     console.log('Ошибки сети или чё-то такое')
   }
 }
-
+export const getJobApplicationsByStatus = async (dispatch) => {
+  try {
+    const response = await fetch(
+      GlobalMainServerAdress +
+        MainServerGetJobApplicationsByStatus +
+        '?status=0',
+      {
+        method: 'GET',
+        headers: {
+          'content-type': 'application/json',
+          Authorization: 'Bearer ' + sessionStorage.getItem('access_token')
+        }
+      }
+    )
+    if (response.ok) {
+      const json = await response.json()
+      dispatch(setJobsList(json.jobs))
+    } else {
+      console.log('WRONG DATA')
+    }
+  } catch (error) {
+    console.log('Ошибки сети или чё-то такое')
+  }
+}
 export const getCodeByPhone = async (setPhoneNumber, onIsContinuedChange) => {
   try {
     const response = await fetch(

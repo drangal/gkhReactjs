@@ -2,7 +2,11 @@ import { useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
 import { MainPageHeader } from './MainPageHeader'
 import { Box, Container } from '@mui/material'
-import { getFreeWorkers, getUserInfo } from '../api/network'
+import {
+  getFreeWorkers,
+  getJobApplicationsByStatus,
+  getUserInfo
+} from '../api/network'
 import { useDispatch } from 'react-redux'
 import { router } from '../router/router'
 
@@ -12,6 +16,7 @@ export const MainPage = () => {
   useEffect(() => {
     if (!sessionStorage.getItem('access_token')) router.navigate('/login')
     else {
+      getJobApplicationsByStatus(dispatch)
       getFreeWorkers(dispatch)
       getUserInfo(dispatch)
       router.navigate('/applications')

@@ -6,6 +6,7 @@ import { Workers } from '../components/Workers'
 import { UserInfo } from '../components/UserInfo'
 import { Link, createBrowserRouter } from 'react-router-dom'
 import { ChatUI } from '../components/Chat'
+import { Jobs } from '../components/Jobs'
 
 export const router = createBrowserRouter([
   {
@@ -27,6 +28,10 @@ export const router = createBrowserRouter([
       {
         path: 'workers',
         element: <Workers />
+      },
+      {
+        path: 'jobs',
+        element: <Jobs />
       },
       {
         path: 'profile',

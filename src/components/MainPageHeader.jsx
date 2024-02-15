@@ -42,6 +42,11 @@ export function MainPageHeader() {
     setAnchorElNav(null)
   }
 
+  const handleCloseNavMenuJobs = () => {
+    router.navigate('/jobs')
+    setAnchorElNav(null)
+  }
+
   const handleCloseNavMenu = () => {
     router.navigate('/maps')
     setAnchorElNav(null)
@@ -123,6 +128,9 @@ export function MainPageHeader() {
               <MenuItem onClick={handleCloseNavMenuWorkers}>
                 <Typography textAlign='center'>Бригады</Typography>
               </MenuItem>
+              <MenuItem onClick={handleCloseNavMenuJobs}>
+                <Typography textAlign='center'>Трудоустройство</Typography>
+              </MenuItem>
             </Menu>
           </Box>
           <RoofingIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
@@ -168,6 +176,15 @@ export function MainPageHeader() {
               sx={{ my: 2, color: 'white', display: 'block' }}
             >
               Бригады
+            </Button>
+
+            <Button
+              onClick={() => {
+                router.navigate('/jobs')
+              }}
+              sx={{ my: 2, color: 'white', display: 'block' }}
+            >
+              Трудоустройство
             </Button>
           </Box>
 
