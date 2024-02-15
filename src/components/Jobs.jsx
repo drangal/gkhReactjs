@@ -1,6 +1,7 @@
 import {
   Button,
   Paper,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -8,12 +9,19 @@ import {
   TableHead,
   TableRow
 } from '@mui/material'
-import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt'
-import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  failureJob,
+  getJobApplicationsByStatus,
+  successJob
+} from '../api/network'
+import { useEffect } from 'react'
 
 export const Jobs = () => {
+  const dispatch = useDispatch()
   const jobs = useSelector((state) => state.jobs.value)
+
+  useEffect(() => {}, [dispatch])
 
   return (
     <TableContainer component={Paper} sx={{ marginTop: 2 }}>
@@ -22,8 +30,7 @@ export const Jobs = () => {
           <TableRow>
             <TableCell>id&nbsp;Соискателя</TableCell>
             <TableCell>Должность</TableCell>
-            <TableCell>Принять</TableCell>
-            <TableCell>Отклонить</TableCell>
+            <TableCell>Решение</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -37,24 +44,27 @@ export const Jobs = () => {
                 {worker.position}
               </TableCell>
               <TableCell>
-                <Button
-                  variant='outlined'
-                  startIcon={<ThumbUpOffAltIcon />}
-                  sx={{ alignSelf: 'flex-end' }}
-                  onClick={() => console.log('Приняли)')}
-                >
-                  Да
-                </Button>
-              </TableCell>
-              <TableCell component='th' scope='row'>
-                <Button
-                  variant='outlined'
-                  startIcon={<ThumbDownOffAltIcon />}
-                  sx={{ alignSelf: 'flex-end' }}
-                  onClick={() => {}}
-                >
-                  Отклонить
-                </Button>
+                <Stack spacing={'2px'}>
+                  <Button
+                    variant='outlined'
+                    onClick={() => {
+                      successJob(worker.id)
+                      getJobApplicationsByStatus(dispatch)
+                    }}
+                  >
+                    Принять
+                  </Button>
+                  <Button
+                    variant='outlined'
+                    color='error'
+                    onClick={() => {
+                      failureJob(worker.id)
+                      getJobApplicationsByStatus(dispatch)
+                    }}
+                  >
+                    Отказать
+                  </Button>
+                </Stack>
               </TableCell>
             </TableRow>
           ))}

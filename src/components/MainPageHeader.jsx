@@ -13,9 +13,10 @@ import MenuItem from '@mui/material/MenuItem'
 import RoofingIcon from '@mui/icons-material/Roofing'
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
-import { router } from '../router/router'
+import { useNavigate } from 'react-router-dom'
 
 export function MainPageHeader() {
+  const navigate = useNavigate()
   const [anchorElNav, setAnchorElNav] = useState(null)
   const [anchorElUser, setAnchorElUser] = useState(null)
   const userInfo = useSelector((state) => state.userInfo.value)
@@ -28,27 +29,27 @@ export function MainPageHeader() {
   }
 
   const handleCloseNavMenuMap = () => {
-    router.navigate('/maps')
+    navigate('/maps')
     setAnchorElNav(null)
   }
 
   const handleCloseNavMenuApplications = () => {
-    router.navigate('/applications')
+    navigate('/applications')
     setAnchorElNav(null)
   }
 
   const handleCloseNavMenuWorkers = () => {
-    router.navigate('/workers')
+    navigate('/workers')
     setAnchorElNav(null)
   }
 
   const handleCloseNavMenuJobs = () => {
-    router.navigate('/jobs')
+    navigate('/jobs')
     setAnchorElNav(null)
   }
 
   const handleCloseNavMenu = () => {
-    router.navigate('/maps')
+    navigate('/maps')
     setAnchorElNav(null)
   }
 
@@ -58,13 +59,13 @@ export function MainPageHeader() {
 
   const handleOpenUserProfile = () => {
     handleCloseUserMenu()
-    router.navigate('/profile')
+    navigate('/profile')
   }
 
   const handleLogout = () => {
     setAnchorElUser(null)
     sessionStorage.removeItem('access_token')
-    router.navigate('/login')
+    navigate('/login')
   }
 
   return (
@@ -155,7 +156,7 @@ export function MainPageHeader() {
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             <Button
               onClick={() => {
-                router.navigate('/maps')
+                navigate('/maps')
               }}
               sx={{ my: 2, color: 'white', display: 'block' }}
             >
@@ -163,7 +164,7 @@ export function MainPageHeader() {
             </Button>
             <Button
               onClick={() => {
-                router.navigate('/applications')
+                navigate('/applications')
               }}
               sx={{ my: 2, color: 'white', display: 'block' }}
             >
@@ -171,7 +172,7 @@ export function MainPageHeader() {
             </Button>
             <Button
               onClick={() => {
-                router.navigate('/workers')
+                navigate('/workers')
               }}
               sx={{ my: 2, color: 'white', display: 'block' }}
             >
@@ -180,7 +181,7 @@ export function MainPageHeader() {
 
             <Button
               onClick={() => {
-                router.navigate('/jobs')
+                navigate('/jobs')
               }}
               sx={{ my: 2, color: 'white', display: 'block' }}
             >

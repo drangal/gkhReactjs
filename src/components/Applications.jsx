@@ -5,34 +5,43 @@ import {
   Alert,
   Box,
   Button,
+  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
   Divider,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
   Snackbar,
+  Stack,
   TextField,
   Tooltip,
   Typography
 } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt'
+import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined'
+import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined'
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt'
 import { useEffect, useState } from 'react'
 import {
+  assignAnEmployee,
   closeInvocation,
   getAcceptedDispatcherInvocations,
-  getClosedDispatcherInvocations,
+  getCancelInvocations,
   getInWorkDispatcherInvocations,
   getIncomingDispatcherInvocations
 } from '../api/network'
 import { ToggleInvocationStatus } from './ToggleInvocations'
 import { setApplicationList } from '../slices/applicationsSlice'
-import { router } from '../router/router'
+import { useNavigate } from 'react-router-dom'
 
 export const Applications = () => {
+  const navigate = useNavigate()
   const dispatch = useDispatch()
   const applications = useSelector((state) => state.applications.value)
   const [openDialog, setOpenDialog] = useState(false)
@@ -42,12 +51,25 @@ export const Applications = () => {
   const [expanded, setExpanded] = useState(false)
   const [applicationStatus, setApplicationStatus] = useState('incoming')
   const [selectedApplicationId, setSelectedApplication] = useState()
+  const [checked, setChecked] = useState([])
 
   const handleClickOpenDialog = (event) => {
     setSelectedApplication(
-      +event.currentTarget.parentNode.parentNode.id.match(/\d+/)
+      +event.currentTarget.parentNode.parentNode.parentNode.parentNode.id.match(
+        /\d+/
+      )
     )
     setOpenDialog(true)
+  }
+
+  const handleClickAssign = (event) => {
+    setSelectedApplication(
+      +event.currentTarget.parentNode.parentNode.parentNode.parentNode.id.match(
+        /\d+/
+      )
+    )
+    assignAnEmployee(selectedApplicationId, checked)
+    getIncomingDispatcherInvocations(dispatch)
   }
 
   const handleCloseDialog = () => {
@@ -92,8 +114,7 @@ export const Applications = () => {
       getAcceptedDispatcherInvocations(dispatch)
     else if (applicationStatus === 'inWork')
       getInWorkDispatcherInvocations(dispatch)
-    else if (applicationStatus === 'closed')
-      getClosedDispatcherInvocations(dispatch)
+    else if (applicationStatus === 'closed') getCancelInvocations(dispatch)
     else dispatch(setApplicationList([]))
   }, [applicationStatus])
 
@@ -108,7 +129,7 @@ export const Applications = () => {
         gap: 1
       }}
     >
-      <Button onClick={() => router.navigate('chat')} />
+      <Button onClick={() => navigate('chat')} />
       <ToggleInvocationStatus
         applicationStatus={applicationStatus}
         setApplicationStatus={setApplicationStatus}
@@ -159,30 +180,62 @@ export const Applications = () => {
               <Typography>{application.description}</Typography>
             </Box>
             {applicationStatus === 'incoming' ? (
-              <Tooltip title='Принять заявку' placement='top' arrow>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  flexWrap: 'wrap',
+                  alignSelf: 'flex-end'
+                }}
+              >
+                <CheckboxListSecondary
+                  checked={checked}
+                  setChecked={setChecked}
+                />
+                <Stack direction={'row'} gap={'2px'}>
+                  <Tooltip title='Назначить рабочих' placement='top' arrow>
+                    <Button
+                      variant='outlined'
+                      startIcon={<AssignmentIndOutlinedIcon />}
+                      onClick={handleClickAssign}
+                    >
+                      Назначить
+                    </Button>
+                  </Tooltip>
+                  <Tooltip title='Отменить заявку' placement='top' arrow>
+                    <Button
+                      variant='outlined'
+                      startIcon={<ThumbDownOffAltIcon />}
+                      onClick={handleClickOpenDialog}
+                    >
+                      Отклонить
+                    </Button>
+                  </Tooltip>
+                </Stack>
+              </Box>
+            ) : (
+              ''
+            )}
+
+            {applicationStatus === 'inWork' ? (
+              <Tooltip
+                title='Открыть чат с пользователем'
+                placement='top'
+                arrow
+              >
                 <Button
                   variant='outlined'
-                  startIcon={<ThumbUpOffAltIcon />}
+                  startIcon={<ChatOutlinedIcon />}
                   sx={{ alignSelf: 'flex-end' }}
-                  onClick={() => console.log('Приняли)')}
+                  onClick={() => console.log('Чат)')}
                 >
-                  Принять
+                  Чат
                 </Button>
               </Tooltip>
             ) : (
               ''
             )}
-
-            <Tooltip title='Отменить заявку' placement='top' arrow>
-              <Button
-                variant='outlined'
-                startIcon={<ThumbDownOffAltIcon />}
-                sx={{ alignSelf: 'flex-end' }}
-                onClick={handleClickOpenDialog}
-              >
-                Отклонить
-              </Button>
-            </Tooltip>
           </AccordionDetails>
         </Accordion>
       ))}
@@ -229,5 +282,53 @@ export const Applications = () => {
         </Alert>
       </Snackbar>
     </Box>
+  )
+}
+
+export default function CheckboxListSecondary({ checked, setChecked }) {
+  const freeWorkers = useSelector((state) => state.freeWorkers.value)
+
+  const handleToggle = (value) => () => {
+    const currentIndexChecked = checked.indexOf(value)
+
+    const newChecked = [...checked]
+
+    if (currentIndexChecked === -1) {
+      newChecked.push(value)
+    } else {
+      newChecked.splice(currentIndexChecked, 1)
+    }
+    console.log(newChecked)
+    setChecked(newChecked)
+  }
+
+  return (
+    <List dense sx={{ width: '100%', bgcolor: 'background.paper' }}>
+      {freeWorkers.map((worker) => {
+        const labelId = `${worker.user_id}`
+        return (
+          <ListItem
+            key={worker.user_id}
+            secondaryAction={
+              <Checkbox
+                edge='end'
+                onChange={handleToggle(worker.user_id)}
+                checked={checked.indexOf(worker.user_id) !== -1}
+                inputProps={{ 'aria-labelledby': labelId }}
+              />
+            }
+            disablePadding
+          >
+            <ListItemButton>
+              <ListItemText
+                id={labelId}
+                primary={`${worker.user_id} ${worker.position}`}
+                onClick={handleToggle(worker.user_id)}
+              />
+            </ListItemButton>
+          </ListItem>
+        )
+      })}
+    </List>
   )
 }

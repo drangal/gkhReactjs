@@ -1,4 +1,3 @@
-import { router } from '../router/router'
 import { setApplicationList } from '../slices/applicationsSlice'
 import { setFreeWorkersList } from '../slices/freeWorkersSlice'
 import { setJobsList } from '../slices/jobsSlice'
@@ -19,11 +18,85 @@ const MainServerGetInvocationsByStatus =
   '/dispatchers/getAllMyInvocationsByStatus'
 const MainServerGetJobApplicationsByStatus =
   '/dispatchers/getJobApplicationsByStatus'
+
+const MainServerFailureJob = '/dispatchers/failureJob'
+const MainServerSuccessJob = '/dispatchers/successJob'
+const MainServerGetCancelInvocations = '/dispatchers/getCancelInvocations'
 const MainServerGetFreeWorkers = '/dispatchers/getFreeWorkers'
+const MainServerAssignAnEmployee = '/dispatchers/assignAnEmployee'
 const MainServerCloseInvocation = '/dispatchers/dispatcherCloseInvocation'
 const MainServerUsersMe = '/users/me'
 const MainServerUsersEdit = '/users/edit'
 
+export const assignAnEmployee = async (invocationId, workerIds) => {
+  await workerIds.map(async (workerId) => {
+    try {
+      const response = await fetch(
+        GlobalAuthServerAdress + MainServerAssignAnEmployee,
+        {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+            Authorization: 'Bearer ' + sessionStorage.getItem('access_token')
+          },
+          body: JSON.stringify({
+            invocation_id: invocationId,
+            worker_id: workerId
+          })
+        }
+      )
+
+      if (response.ok) {
+        console.log(response.statusText)
+      } else {
+        console.log(response.statusText)
+      }
+    } catch (error) {
+      console.log('Ошибки сети или чё-то такое')
+    }
+  })
+}
+
+export const failureJob = async (id) => {
+  try {
+    const response = await fetch(
+      GlobalMainServerAdress + MainServerFailureJob + '?application_id=' + id,
+      {
+        mode: 'cors',
+        method: 'PATCH',
+        headers: {
+          'content-type': 'application/json',
+          Authorization: 'Bearer ' + sessionStorage.getItem('access_token')
+        }
+      }
+    )
+
+    return response.ok
+  } catch (error) {
+    console.log('Ошибки сети или чё-то такое: ' + error)
+    return false
+  }
+}
+export const successJob = async (id) => {
+  try {
+    const response = await fetch(
+      GlobalMainServerAdress + MainServerSuccessJob + '?application_id=' + id,
+      {
+        mode: 'cors',
+        method: 'PATCH',
+        headers: {
+          'content-type': 'application/json',
+          Authorization: 'Bearer ' + sessionStorage.getItem('access_token')
+        }
+      }
+    )
+
+    return response.ok
+  } catch (error) {
+    console.log('Ошибки сети или чё-то такое: ' + error)
+    return false
+  }
+}
 export const closeInvocation = async (id) => {
   try {
     const response = await fetch(
@@ -140,12 +213,10 @@ export const getInWorkDispatcherInvocations = async (dispatch) => {
     console.log('Ошибки сети или чё-то такое')
   }
 }
-export const getClosedDispatcherInvocations = async (dispatch) => {
+export const getCancelInvocations = async (dispatch) => {
   try {
     const response = await fetch(
-      GlobalMainServerAdress +
-        MainServerGetInvocationsByStatus +
-        '?status=-1&status=-2&status=-3',
+      GlobalMainServerAdress + MainServerGetCancelInvocations,
       {
         method: 'GET',
         headers: {
@@ -215,7 +286,8 @@ export const getCodeByPhone = async (setPhoneNumber, onIsContinuedChange) => {
 export const getDispatcherToken = async (
   phoneNumber,
   inputTextValue,
-  setInputError
+  setInputError,
+  navigate
 ) => {
   try {
     const response = await fetch(
@@ -233,7 +305,7 @@ export const getDispatcherToken = async (
     if (response.ok) {
       const json = await response.json()
       sessionStorage.setItem('access_token', json.access_token)
-      router.navigate('/')
+      navigate('/')
     } else {
       setInputError(true)
       console.log(response.statusText)

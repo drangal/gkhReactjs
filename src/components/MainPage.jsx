@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 import { MainPageHeader } from './MainPageHeader'
 import { Box, Container } from '@mui/material'
 import {
@@ -8,18 +8,18 @@ import {
   getUserInfo
 } from '../api/network'
 import { useDispatch } from 'react-redux'
-import { router } from '../router/router'
 
 export const MainPage = () => {
+  const navigate = useNavigate()
   const dispatch = useDispatch()
 
   useEffect(() => {
-    if (!sessionStorage.getItem('access_token')) router.navigate('/login')
+    if (!sessionStorage.getItem('access_token')) navigate('/login')
     else {
       getJobApplicationsByStatus(dispatch)
       getFreeWorkers(dispatch)
       getUserInfo(dispatch)
-      router.navigate('/applications')
+      navigate('/applications')
     }
   }, [])
 

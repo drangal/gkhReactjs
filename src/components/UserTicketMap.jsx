@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 export const UserTicketMap = () => {
   const applications = useSelector((state) => state.applications.value)
 
-  // todo reload site
+  // todo сделать отдельное состояние для входящих
 
   return (
     <Card>
