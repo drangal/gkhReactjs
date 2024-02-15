@@ -1,3 +1,4 @@
+import { router } from '../router/router'
 import { setApplicationList } from '../slices/applicationsSlice'
 import { setFreeWorkersList } from '../slices/freeWorkersSlice'
 import { setUserInfo } from '../slices/userInfoSlice'
@@ -188,8 +189,7 @@ export const getCodeByPhone = async (setPhoneNumber, onIsContinuedChange) => {
 export const getDispatcherToken = async (
   phoneNumber,
   inputTextValue,
-  setInputError,
-  navigate
+  setInputError
 ) => {
   try {
     const response = await fetch(
@@ -207,7 +207,7 @@ export const getDispatcherToken = async (
     if (response.ok) {
       const json = await response.json()
       sessionStorage.setItem('access_token', json.access_token)
-      navigate('/')
+      router.navigate('/')
     } else {
       setInputError(true)
       console.log(response.statusText)

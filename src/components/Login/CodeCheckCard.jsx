@@ -10,12 +10,10 @@ import {
   Link
 } from '@mui/material'
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import KeyOutlinedIcon from '@mui/icons-material/KeyOutlined'
 import { getDispatcherToken } from '../../api/network'
 
 export const CodeCheckCard = ({ onIsContinuedChange, phoneNumber }) => {
-  const navigate = useNavigate()
   const [inputError, setInputError] = useState(false)
   const [inputTextValue, setInputTextValue] = useState('')
 
@@ -76,12 +74,7 @@ export const CodeCheckCard = ({ onIsContinuedChange, phoneNumber }) => {
           }}
           type='button'
           onClick={() =>
-            getDispatcherToken(
-              phoneNumber,
-              inputTextValue,
-              setInputError,
-              navigate
-            )
+            getDispatcherToken(phoneNumber, inputTextValue, setInputError)
           }
           autoFocus
         >

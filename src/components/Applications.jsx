@@ -30,8 +30,7 @@ import {
 } from '../api/network'
 import { ToggleInvocationStatus } from './ToggleInvocations'
 import { setApplicationList } from '../slices/applicationsSlice'
-
-//TODO исправить "успешное отклонение заявки" при ошибке запроса, попробовать обновить страницу
+import { router } from '../router/router'
 
 export const Applications = () => {
   const dispatch = useDispatch()
@@ -87,10 +86,6 @@ export const Applications = () => {
   }
 
   useEffect(() => {
-    getIncomingDispatcherInvocations(dispatch)
-  }, [])
-
-  useEffect(() => {
     if (applicationStatus === 'incoming')
       getIncomingDispatcherInvocations(dispatch)
     else if (applicationStatus === 'accepted')
@@ -113,6 +108,7 @@ export const Applications = () => {
         gap: 1
       }}
     >
+      <Button onClick={() => router.navigate('chat')} />
       <ToggleInvocationStatus
         applicationStatus={applicationStatus}
         setApplicationStatus={setApplicationStatus}
