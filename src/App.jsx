@@ -16,9 +16,8 @@ export default function App() {
       <Routes>
         <Route path='/' element={<MainPage />}>
           <Route path='maps' element={<UserTicketMap />} />
-          <Route path='applications' element={<Applications />}>
-            <Route path='chat' element={<ChatUI />} />{' '}
-          </Route>
+          <Route path='applications' element={<Applications />} />
+          <Route path='chat' element={<ChatUI />} />
           <Route path='workers' element={<Workers />} />
           <Route path='jobs' element={<Jobs />} />
           <Route path='profile' element={<UserInfo />} />

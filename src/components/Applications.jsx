@@ -129,7 +129,6 @@ export const Applications = () => {
         gap: 1
       }}
     >
-      <Button onClick={() => navigate('chat')} />
       <ToggleInvocationStatus
         applicationStatus={applicationStatus}
         setApplicationStatus={setApplicationStatus}
@@ -218,6 +217,20 @@ export const Applications = () => {
               ''
             )}
 
+            {applicationStatus === 'accepted' ? (
+              <Tooltip title='Отменить заявку' placement='top' arrow>
+                <Button
+                  variant='outlined'
+                  startIcon={<ThumbDownOffAltIcon />}
+                  sx={{ alignSelf: 'flex-end' }}
+                  onClick={handleClickOpenDialog}
+                >
+                  Отклонить
+                </Button>
+              </Tooltip>
+            ) : (
+              ''
+            )}
             {applicationStatus === 'inWork' ? (
               <Tooltip
                 title='Открыть чат с пользователем'
@@ -228,11 +241,19 @@ export const Applications = () => {
                   variant='outlined'
                   startIcon={<ChatOutlinedIcon />}
                   sx={{ alignSelf: 'flex-end' }}
-                  onClick={() => console.log('Чат)')}
+                  onClick={() => navigate('/chat')}
                 >
                   Чат
                 </Button>
               </Tooltip>
+            ) : (
+              ''
+            )}
+            {applicationStatus === 'closed' ? (
+              <Box sx={{ alignSelf: 'flex-start', flexGrow: 1 }}>
+                <Typography variant='h5'>Причина закрытия:</Typography>
+                <Typography>{application.problem_status[0].comment}</Typography>
+              </Box>
             ) : (
               ''
             )}

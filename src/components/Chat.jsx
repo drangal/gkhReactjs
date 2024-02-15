@@ -2,11 +2,7 @@ import { Box, TextField, Button, Typography, Grid, Paper } from '@mui/material'
 import SendIcon from '@mui/icons-material/Send'
 import { useState } from 'react'
 
-let messages = [
-  { id: 1, text: 'Привет!', sender: 'elel' },
-  { id: 2, text: 'Здраствуйте. Вам необходима помощь?', sender: 'olol' },
-  { id: 3, text: 'Да. Когда на ул.Грушовую завезут яблок?', sender: 'elel' }
-]
+let messages = []
 
 export const ChatUI = () => {
   const [input, setInput] = useState('')
@@ -16,7 +12,7 @@ export const ChatUI = () => {
       messages.push({
         id: +Math.random().toString(16).slice(2),
         text: input,
-        sender: 'olol'
+        sender: 'Me'
       })
       setInput('')
     }
@@ -71,7 +67,7 @@ export const ChatUI = () => {
 }
 
 const Message = ({ message }) => {
-  const isOpponent = message.sender === 'elel'
+  const isOpponent = message.sender !== 'Me'
 
   return (
     <Box
