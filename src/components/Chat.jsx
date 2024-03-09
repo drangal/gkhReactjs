@@ -2,7 +2,10 @@ import { Box, TextField, Button, Typography, Grid, Paper } from '@mui/material'
 import SendIcon from '@mui/icons-material/Send'
 import { useState } from 'react'
 
-let messages = []
+let messages = [
+  { id: 1, text: 'На вашу заявку назначен сотрудник, ожидайте!', sender: 'Me' },
+  { id: 2, text: 'Ожидаю, спасибо', sender: 'Lele' }
+]
 
 export const ChatUI = () => {
   const [input, setInput] = useState('')

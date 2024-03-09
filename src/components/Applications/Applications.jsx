@@ -35,9 +35,9 @@ import {
   getCancelInvocations,
   getInWorkDispatcherInvocations,
   getIncomingDispatcherInvocations
-} from '../api/network'
+} from '../../api/network'
 import { ToggleInvocationStatus } from './ToggleInvocations'
-import { setApplicationList } from '../slices/applicationsSlice'
+import { setApplicationList } from '../../slices/applicationsSlice'
 import { useNavigate } from 'react-router-dom'
 
 export const Applications = () => {
@@ -129,6 +129,14 @@ export const Applications = () => {
         gap: 1
       }}
     >
+      <Button
+        variant='outlined'
+        startIcon={<ChatOutlinedIcon />}
+        sx={{ alignSelf: 'flex-end' }}
+        onClick={() => navigate('/chat')}
+      >
+        Чат
+      </Button>
       <ToggleInvocationStatus
         applicationStatus={applicationStatus}
         setApplicationStatus={setApplicationStatus}
