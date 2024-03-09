@@ -1,6 +1,7 @@
 import { setApplicationList } from '../slices/applicationsSlice'
 import { setFreeWorkersList } from '../slices/freeWorkersSlice'
 import { setJobsList } from '../slices/jobsSlice'
+import { setPts } from '../slices/ptsSlice'
 import { setUserInfo } from '../slices/userInfoSlice'
 
 const LocalAuthServerAdress = 'http://26.65.125.199:8000'
@@ -12,13 +13,13 @@ const GlobalFileServerAdress = 'https://enotgpt-fileserver.serveo.net'
 
 const AuthServerCreateCodeDispatcher = '/auth/create_code/dispatcher'
 const AuthServerGetTokenDispatcher = '/auth/get_token/dispatcher'
+
 const MainServerGetMyIncomingInvocations =
   '/dispatchers/getMyIncomingInvocations'
 const MainServerGetInvocationsByStatus =
   '/dispatchers/getAllMyInvocationsByStatus'
 const MainServerGetJobApplicationsByStatus =
   '/dispatchers/getJobApplicationsByStatus'
-
 const MainServerFailureJob = '/dispatchers/failureJob'
 const MainServerSuccessJob = '/dispatchers/successJob'
 const MainServerGetCancelInvocations = '/dispatchers/getCancelInvocations'
@@ -27,12 +28,62 @@ const MainServerAssignAnEmployee = '/dispatchers/assignAnEmployee'
 const MainServerCloseInvocation = '/dispatchers/dispatcherCloseInvocation'
 const MainServerUsersMe = '/users/me'
 const MainServerUsersEdit = '/users/edit'
+const MainServerGetPts = '/updates/get_pts'
+const MainServerUpdates = '/updates/updates'
+
+const FileServerUploadPhoto = '/uploadPhoto'
+
+export const getPts = async (dispatch) => {
+  try {
+    const response = await fetch(GlobalMainServerAdress + MainServerGetPts, {
+      method: 'GET',
+      headers: {
+        'content-type': 'application/json',
+        Authorization: 'Bearer ' + sessionStorage.getItem('access_token')
+      }
+    })
+    if (response.ok) {
+      const json = await response.json()
+      dispatch(setPts(json.new_pts))
+    } else {
+      console.log('WRONG DATA')
+    }
+  } catch (error) {
+    console.log('Ошибки сети или чё-то такое')
+  }
+}
+
+export const getUpdates = async (pts) => {
+  try {
+    const response = await fetch(
+      GlobalMainServerAdress +
+        MainServerUpdates +
+        '?pts=' +
+        pts +
+        '&timeout=60',
+      {
+        method: 'GET',
+        headers: {
+          'content-type': 'application/json',
+          Authorization: 'Bearer ' + sessionStorage.getItem('access_token')
+        }
+      }
+    )
+    if (response.ok) {
+      const json = await response.json()
+    } else {
+      console.log('WRONG DATA')
+    }
+  } catch (error) {
+    console.log('Ошибки сети или чё-то такое')
+  }
+}
 
 export const assignAnEmployee = async (invocationId, workerIds) => {
   await workerIds.map(async (workerId) => {
     try {
       const response = await fetch(
-        GlobalAuthServerAdress + MainServerAssignAnEmployee,
+        GlobalMainServerAdress + MainServerAssignAnEmployee,
         {
           method: 'POST',
           headers: {
@@ -45,7 +96,8 @@ export const assignAnEmployee = async (invocationId, workerIds) => {
           })
         }
       )
-
+      console.log(invocationId)
+      console.log(workerId)
       if (response.ok) {
         console.log(response.statusText)
       } else {
@@ -337,6 +389,27 @@ export const getUserInfo = async (dispatch) => {
 
 export const setUserEdit = async () => {
   try {
+    let url = 'none'
+    if (document.getElementById('file').files[0]) {
+      let formData = new FormData()
+      formData.append('file', document.getElementById('file').files[0])
+      await fetch(GlobalFileServerAdress + FileServerUploadPhoto, {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer ' + sessionStorage.getItem('access_token')
+        },
+        body: formData
+      })
+        .then((response) => response.json())
+        .then((result) => {
+          console.log('Success:', result)
+          url = result.url
+        })
+        .catch((error) => {
+          console.error('Error:', error)
+        })
+    }
+
     const response = await fetch(GlobalMainServerAdress + MainServerUsersEdit, {
       method: 'POST',
       headers: {
@@ -344,14 +417,30 @@ export const setUserEdit = async () => {
         Authorization: 'Bearer ' + sessionStorage.getItem('access_token')
       },
       body: JSON.stringify({
-        name: document.getElementById('name').value,
-        surname: document.getElementById('surname').value,
-        patronymic: document.getElementById('patronymic').value,
-        city: document.getElementById('city').value,
-        photo: 'string',
-        street: document.getElementById('street').value,
-        house: document.getElementById('houseNumber').value,
-        apartment_number: document.getElementById('apartmentNumber').value,
+        name:
+          document.getElementById('name').value ||
+          document.getElementById('name').getAttribute('placeholder'),
+        surname:
+          document.getElementById('surname').value ||
+          document.getElementById('surname').getAttribute('placeholder'),
+        patronymic:
+          document.getElementById('patronymic').value ||
+          document.getElementById('patronymic').getAttribute('placeholder'),
+        city:
+          document.getElementById('city').value ||
+          document.getElementById('city').getAttribute('placeholder'),
+        photo: url,
+        street:
+          document.getElementById('street').value ||
+          document.getElementById('street').getAttribute('placeholder'),
+        house:
+          document.getElementById('houseNumber').value ||
+          document.getElementById('houseNumber').getAttribute('placeholder'),
+        apartment_number:
+          document.getElementById('apartmentNumber').value ||
+          document
+            .getElementById('apartmentNumber')
+            .getAttribute('placeholder'),
         coordinates: [0]
       })
     })

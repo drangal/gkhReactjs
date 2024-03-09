@@ -11,10 +11,11 @@ import {
   Typography
 } from '@mui/material'
 import { useState } from 'react'
-import { useSelector } from 'react-redux'
-import { setUserEdit } from '../api/network'
+import { useDispatch, useSelector } from 'react-redux'
+import { getUserInfo, setUserEdit } from '../api/network'
 
 export const UserInfo = () => {
+  const dispatch = useDispatch()
   const [selectedPhoto, setSelectedPhoto] = useState(null)
   const userInfo = useSelector((state) => state.userInfo.value)
 
@@ -23,6 +24,7 @@ export const UserInfo = () => {
     const reader = new FileReader()
 
     reader.onload = (e) => {
+      console.log('e.target.result: ' + e.target.result)
       setSelectedPhoto(e.target.result)
     }
 
@@ -32,6 +34,7 @@ export const UserInfo = () => {
   const handleSaveInfoClick = () => {
     console.log('save click')
     setUserEdit()
+    getUserInfo(dispatch)
   }
 
   return (

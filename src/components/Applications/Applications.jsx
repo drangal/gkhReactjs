@@ -54,6 +54,11 @@ export const Applications = () => {
   const [checked, setChecked] = useState([])
 
   const handleClickOpenDialog = (event) => {
+    console.log(
+      +event.currentTarget.parentNode.parentNode.parentNode.parentNode.id.match(
+        /\d+/
+      )
+    )
     setSelectedApplication(
       +event.currentTarget.parentNode.parentNode.parentNode.parentNode.id.match(
         /\d+/
@@ -68,6 +73,8 @@ export const Applications = () => {
         /\d+/
       )
     )
+    console.log(selectedApplicationId)
+    console.log(checked)
     assignAnEmployee(selectedApplicationId, checked)
     getIncomingDispatcherInvocations(dispatch)
   }

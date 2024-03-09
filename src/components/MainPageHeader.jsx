@@ -19,7 +19,7 @@ export function MainPageHeader() {
   const navigate = useNavigate()
   const [anchorElNav, setAnchorElNav] = useState(null)
   const [anchorElUser, setAnchorElUser] = useState(null)
-  const userInfo = useSelector((state) => state.userInfo.value)
+  const userPhoto = useSelector((state) => state.userInfo.value.photo)
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget)
@@ -192,7 +192,7 @@ export function MainPageHeader() {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title='Настройки'>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt='Dispatcher' src={userInfo.photo} />
+                <Avatar alt='Dispatcher' src={userPhoto} />
               </IconButton>
             </Tooltip>
             <Menu
